@@ -135,21 +135,7 @@ namespace FF1Lib
 			UpdateDialogs(npcdata, flags);
 			AddElementIcons();
 
-			//PutInBank(0x1F, 0xC2A8, Blob.FromHex("22"));
-			PutInBank(0x1F, 0xC2C6, Blob.FromHex("38EAEA"));
-
-			var tileprop = Get(0x000, 0x100).Chunk(2);
-
-			for (int i = 0; i < 0x80; i++)
-			{
-				if ((tileprop[i][0] & 0x01) == 0x01)
-				{
-					tileprop[i][0] &= 0xFD; 
-				}
-			}
-
-			Put(0x0000, tileprop.SelectMany(x => x.ToBytes()).ToArray());
-
+			CanoeUnleashed();
 
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 

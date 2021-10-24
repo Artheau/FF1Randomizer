@@ -2118,5 +2118,49 @@ namespace FF1Lib
 			// replace asm, set hitchance and critchance to 0
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
 		}
+
+		public void CanoeUnleashed()
+		{
+			//Disable Ship
+			PutInBank(0x1F, 0xC2C6, Blob.FromHex("38EAEA"));
+
+			//Canoe everywhere else
+			var tileprop = Get(0x000, 0x100).Chunk(2);
+
+			for (int i = 0; i < 0x80; i++)
+			{
+				if ((tileprop[i][0] & 0x01) == 0x01)
+				{
+					tileprop[i][0] &= 0xFD;
+				}
+			}
+
+			Put(0x0000, tileprop.SelectMany(x => x.ToBytes()).ToArray());
+
+			// Loading Canoe sprite
+			PutInBank(0x0D, 0xBE30, Blob.FromHex("A000B946BE990068B910AE990069C8C08090EF4C0068"));
+			PutInBank(0x1F, 0xE912, Blob.FromHex("A90D2003FE4C30BE"));
+			PutInBank(0x0D, 0xBE46, Blob.FromHex("A9022003FE202EE92075E9209EE9AD0220A91F8D0620A9008D06208510A9A08511202868A9A18511A000B1108D0720C8C08090F660"));
+
+			// Moving Canoe
+			PutInBank(0x0D, 0xBE80, Blob.FromHex("A544291FC901F011291EAABDA1CD8510BDA2CD85118A6C1000AD1260F0021860A900854485453860"));
+			PutInBank(0x1F, 0xCA81, Blob.FromHex("4C80BE"));
+
+			// Drawing Canoe
+			PutInBank(0x1F, 0xE40F, Blob.FromHex("4C0069"));
+			PutInBank(0x0D, 0xAE10, Blob.FromHex("A544291FC901F008A0012081E24CC7E4A9708540A96F8541A535D002A5362908A6331D17E48510A9008512A93E1865108510A969690085112001E34CC7E4F942FB42F842FA42FD42FF42FC42FE42F802FA02F902FB02FC02FE02FD02FF02F002F202F102F302F402F602F502F702F002F202F102F302F402F602F502F702"));
+
+			// Remove 14th npcs and update palettes
+			for (int i = 0; i < 61; i++)
+			{
+				SetNpc((MapId)i, 14, 0, 0, 0, false, true);
+				var sprite_palette = GetFromBank(0x00, 0xA000 + (i * 0x30) + 0x18, 8);
+				if (sprite_palette == Blob.FromHex("0F0000000F000000"))
+				{
+					PutInBank(0x00, 0xA000 + (i * 0x30) + 0x18, Blob.FromHex("000F2730000F2730"));
+				}
+			}
+
+		}
 	}
 }
