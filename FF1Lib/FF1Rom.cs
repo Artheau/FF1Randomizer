@@ -550,6 +550,31 @@ namespace FF1Lib
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
 				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
 
+			var findKey = generatedPlacement.Find(x => x.Item == Item.Key);
+			generatedPlacement = generatedPlacement.Where(x => x.Item != Item.Key).ToList();
+
+			if (findKey.GetType().Equals(typeof(MapObject)))
+			{
+				var keyConv = (MapObject)findKey;
+				MapObject newKey = new(keyConv, Item.Cabin);
+				newKey.Put(this);
+				generatedPlacement.Add(newKey);
+			}
+			else if (findKey.GetType().Equals(typeof(TreasureChest)))
+			{
+				var keyConv = (TreasureChest)findKey;
+				TreasureChest newKey = new(keyConv, Item.Cabin);
+				newKey.Put(this);
+				//generatedPlacement.Add(newKey);
+			}
+			else if (findKey.GetType().Equals(typeof(ItemShopSlot)))
+			{
+				var keyConv = (ItemShopSlot)findKey;
+				ItemShopSlot newKey = new(keyConv, Item.Cabin);
+				newKey.Put(this);
+				//generatedPlacement.Add(newKey);
+			}
+
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
 			if ((bool)flags.MagicShopLocs)

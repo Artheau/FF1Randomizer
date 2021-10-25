@@ -2133,6 +2133,8 @@ namespace FF1Lib
 				{
 					tileprop[i][0] &= 0xFD;
 				}
+
+				tileprop[i][0] |= 0x04;
 			}
 
 			Put(0x0000, tileprop.SelectMany(x => x.ToBytes()).ToArray());
